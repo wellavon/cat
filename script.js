@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Функция для получения продуктов с сервера
     async function fetchProducts() {
         try {
-            const response = await fetch('http://localhost:5500/products'); // Замените URL, если необходимо
+            const response = await fetch('/.netlify/functions/products'); // Замените URL, если необходимо
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             try {
-                const response = await fetch('http://localhost:5500/products', {
+                const response = await fetch('/.netlify/functions/products', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -178,24 +178,27 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             try {
-                const response = await fetch(`http://localhost:5500/products/${product._id}`, {
+                //  Получаем ID продукта
+                const productId = product._id;
+            
+                const response = await fetch(`/.netlify/functions/update-product?id=${productId}`, {  // Измененный URL
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(updatedProduct)
                 });
-
+            
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
-
+            
                 // Обновляем продукт в локальном массиве
                 const index = products.findIndex(p => p._id === product._id);
                 if (index !== -1) {
                     products[index] = { ...product, ...updatedProduct }; // Обновляем свойства
                 }
-
+            
                 renderProducts();
                 closeModal();
             } catch (error) {
@@ -207,22 +210,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // Функция для удаления продукта
     async function deleteProduct(product) {
         try {
-            const response = await fetch(`http://localhost:5500/products/${product._id}`, {
-                method: 'DELETE'
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
-            // Удаляем продукт из локального массива
-            products = products.filter(p => p._id !== product._id);
-            renderProducts();
-            closeModal();
+          const productId = product._id;
+          const response = await fetch(`/.netlify/functions/delete-product?id=${productId}`, {
+            method: 'DELETE'
+          });
+      
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+      
+          // Удаляем продукт из локального массива
+          products = products.filter(p => p._id !== product._id);
+          renderProducts();
+          closeModal();
         } catch (error) {
-            console.error('Error deleting product:', error);
+          console.error('Error deleting product:', error);
         }
-    }
+      }
 
     // Функция для закрытия модального окна
     function closeModal() {
