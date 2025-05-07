@@ -1,4 +1,3 @@
-// netlify/functions/add-product.js
 const { MongoClient } = require('mongodb');
 
 const uri = process.env.MONGODB_URI;
@@ -19,7 +18,7 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    await clientPromise;
+    await clientPromise; // Используем закешированное подключение
     const db = client.db(dbName);
     const collection = db.collection('products');
 
