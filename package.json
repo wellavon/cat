@@ -2,7 +2,7 @@
   "name": "mongodb",
   "version": "5.9.2",
   "description": "The official MongoDB driver for Node.js",
-  "main": "lib/index.js",
+  "main": "lib/script.js",
   "files": [
     "lib",
     "src",
